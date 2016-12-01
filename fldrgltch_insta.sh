@@ -1,7 +1,4 @@
 #!/bin/sh
-
-
-
 clear
 echo "number of second(s):"
 read seconds
@@ -9,57 +6,44 @@ clear
 echo "Duration will be $seconds second(s)."
 
 copies=$(($seconds*24))
-
-queuepath=/media/photos/gltch/queue/*
-
+queuepath=queue/*
 
 for q in $queuepath
-  do
-  fn=${q##*/}
-  fn=${fn%.*}
-  clear
-  echo "Making $copies copies... of $fn"
-    for i in $(seq 1 $copies)
-  #for ((i=1; i<=$copies; i++))
-  #for i in $copies
-    do
-    #echo $i
-    cp $q /media/photos/gltch/working/$fn$i.jpg
-  done
+do
+fn=${q##*/}
+fn=${fn%.*}
+clear
+echo "Making $copies copies... of $fn"
+
+for i in $(seq 1 $copies)
+do
+cp $q working/$fn$i.jpg
+done
   
-  echo""
-  echo "Resizing..."
-  #mogrify -resize 300x300 /media/photos/gltch/working/*.jpg
-  #mogrify -resize 640x480 /media/photos/gltch/working/*.jpg
-  #mogrify -resize 1024x768 /media/photos/gltch/working/*.jpg
+echo""
+echo "Resizing..."
+path=working/*
+for f in $path
+do
+randomin=$(shuf -n 1 char.txt)
+randomout=$(shuf -n 1 char.txt)
+echo $randomin
+echo "to"
+echo $randomout
+echo
+sed -i "s/$randomin/$randomout/" $f
+mogrify -rotate 180 $f
+randomin=$(shuf -n 1 char.txt)
+randomout=$(shuf -n 1 char.txt)
+sed -i "s/$randomin/$randomout/" $f
+mogrify -rotate 180 $f
+done
   
-  path=/media/photos/gltch/working/*
-  for f in $path
-    do
-    randomin=$(shuf -n 1 /media/photos/gltch/char.txt)
-    randomout=$(shuf -n 1 /media/photos/gltch/char.txt)
-    echo $randomin
-    echo "to"
-    echo $randomout
-    echo
-    sed -i "s/$randomin/$randomout/" $f
-    mogrify -rotate 180 $f
-    randomin=$(shuf -n 1 /media/photos/gltch/char.txt)
-    randomout=$(shuf -n 1 /media/photos/gltch/char.txt)
-    sed -i "s/$randomin/$randomout/" $f
-    mogrify -rotate 180 $f
-  done
-  
-  echo ""
-  echo "Converting to video/gif"
-  convert /media/photos/gltch/working/*.jpg /media/photos/gltch/done/$fn.gif
-  #ffmpeg -f gif -i /media/photos/gltch/done/a.gif /media/photos/gltch/done/a.mp4
-  #convert /media/photos/gltch/working/*.jpg /media/photos/gltch/done/a.avi
-  #ffmpeg -i /media/photos/gltch/working/*.jpg /media/photos/gltch/done/a.avi
-  #ffmpeg -framerate 1/5 -i /media/photos/gltch/working/*.jpg -c:v libx264 -r 30 -pix_fmt yuv420p /media/photos/gltch/done/a.mp4
-  
-  echo ""
-  echo "Cleaning up..."
-  rm /media/photos/gltch/working/*
+echo ""
+echo "Converting to video/gif"
+convert working/*.jpg done/$fn.gif
+echo ""
+echo "Cleaning up..."
+rm working/*
 done
 echo "done."

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import base64
 import os
 import argparse
@@ -14,26 +13,18 @@ args = parser.parse_args()
 inputfile = ''
 
 
-f = '' 
+f = ''
 with open(args.input, 'rb') as imageFile:
    f = str(base64.b64encode(imageFile.read()))
 a=''
 for y in f:
    a+=y
 unique=set(a)
-#print (args.input)
-#print (unique)
-#print (len(unique))
 
 import random
 FindChar = random.sample(set(unique),1)
 ReplaceChar = random.sample(set(unique),1)
 
-
-#import shutil
-#shutil.copyfile(args.input, args.output)
-
 f = open(args.input, 'rb') as imgText
 
 print (f)
-
